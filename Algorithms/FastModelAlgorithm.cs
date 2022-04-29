@@ -11,7 +11,7 @@ namespace BestBusRoute.Algorithms
             var minTime = new int[RouteInfo.TotalNumOfStops];
 
             //Сохраняем ожидания автобуса для вывода общего пути
-            var minAdditionalWaiting = new int[RouteInfo.TotalNumOfStops];
+            var minAdditionalWaiting = new int[RouteInfo.TotalNumOfStops,RouteInfo.NumberOfBuses];
 
             //Посещённые вершины
             var isVisited = new bool[RouteInfo.TotalNumOfStops];
@@ -50,7 +50,7 @@ namespace BestBusRoute.Algorithms
                     if (len + waitingTime + minTime[u] < minTime[stopId - 1])
                     {
                         minTime[stopId - 1] = len + waitingTime + minTime[u];
-                        minAdditionalWaiting[u] = waitingTime;
+                        minAdditionalWaiting[u,busId-1] = waitingTime;
                     }
 
                 }
@@ -120,7 +120,7 @@ namespace BestBusRoute.Algorithms
                 Console.WriteLine("{0}\t  {1}", i + 1, minDistance[i]);
         }
 
-        private static FastModelResult GetPath(List<List<Tuple<int, int, int>>> tree, IReadOnlyList<int> minTime, IReadOnlyList<int> minAddTime, int source, int destination)
+        private static FastModelResult GetPath(List<List<Tuple<int, int, int>>> tree, IReadOnlyList<int> minTime, int[,] minAddTime, int source, int destination)
         {
             var path = new Stack<int>();
             var buses = new Stack<int>();
@@ -139,11 +139,11 @@ namespace BestBusRoute.Algorithms
                     {
                         if (stopId - 1 == end)
                         {
-                            var temp = weight - len; 
+                            var temp = weight - len - minAddTime[i, busId-1]; 
 
                             //Если рассчитанный вес равен минимальному расстоянию до вершины
                             //+ ожиданию, то это искомая вершина
-                            if (temp == minTime[i] + minAddTime[i]) 
+                            if (temp == minTime[i]) 
                             {
                                 weight = temp; 
                                 end = i; 

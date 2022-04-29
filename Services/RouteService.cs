@@ -110,7 +110,7 @@ namespace BestBusRoute.Services
             }
 
             //Вычисление наидешёвого маршрута
-            return CheapModelWithDfs.Calculate(tree, 4, 1);
+            return CheapModelWithDfs.Calculate(tree, source, destination);
         }
 
         public void PrintInfo()
